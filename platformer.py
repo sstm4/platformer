@@ -2,8 +2,8 @@ import pygame, math
 from sys import exit
 
 """
-upload to github
-make player move left and right with constant velocity
+upload to github | done
+make player move left and right with constant velocity | done
 make the sprites
 """
 
@@ -58,6 +58,19 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.jump()
+                
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_a]:
+        if player.left != 0:
+            player.x -= 10
+            if player.left < 0:
+                player.left = 0
+    if keys[pygame.K_d]:
+        if player.right != SCREENWIDTH:
+            player.x += 10
+            if player.right > SCREENWIDTH:
+                player.right = SCREENWIDTH
+    
     screen.fill(BGCOLOUR)
     player.update(screen)
     pygame.display.flip()
