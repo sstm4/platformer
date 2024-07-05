@@ -4,7 +4,10 @@ from sys import exit
 """
 upload to github | done
 make player move left and right with constant velocity | done
-make the sprites
+make the sprites | player idle done
+------------------------
+want to do:
+make a platform | can stand on but will teleport to the top if hitting the bottom of sides
 """
 
 pygame.init()
@@ -32,7 +35,7 @@ class Player(pygame.Rect):
         self.vx = 0
         self.on_ground = False
     
-    def update(self,screen):
+    def update(self,screen,platforms):
         self.on_ground = False
         self.vy += GRAV
         self.y += self.vy
@@ -41,11 +44,28 @@ class Player(pygame.Rect):
             self.on_ground = True
             self.vy = 0
         pygame.draw.rect(screen,WHITE,self)
+        print(self.y,self.vy)
+        for platform in platforms:
+            if self.colliderect(platform):
+                self.vy = 0
+                self.on_ground = True
+                self.bottom = platform.top
     
     def jump(self):
         if self.on_ground:
             self.vy = JUMPHEIGHT
             self.on_ground = False
+
+platforms = []
+class Platform(pygame.Rect):
+    def __init__(self):
+        super().__init__(50,SCREENHEIGHT - 80,100,20)
+        platforms.append(self)
+    
+    def update(self,screen):
+        pygame.draw.rect(screen,BLACK,self)
+
+platform = Platform()
 
 player = Player()
 
@@ -72,7 +92,8 @@ while running:
                 player.right = SCREENWIDTH
     
     screen.fill(BGCOLOUR)
-    player.update(screen)
+    player.update(screen,platforms)
+    platform.update(screen)
     pygame.display.flip()
 
     keys = pygame.key.get_pressed()
